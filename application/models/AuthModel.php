@@ -23,7 +23,8 @@ class AuthModel extends CI_Model {
 		$recordCount = $query->num_rows();
 		
 		if($recordCount == 1) {
-			return true;
+			$userData = $query->row();
+			return array('status' => true, 'user_id' => $row->auth_user_id);
 		}
 		
 		return false;
