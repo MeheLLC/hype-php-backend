@@ -16,7 +16,7 @@ class AuthController extends CI_Controller {
 		// Check to make sure the contents are not empty
 		
 		if(empty($username) || empty($password)) {
-			return false;
+			return json_encode(array('status' => false));
 		}
 		
 		$hashedPassword = hash('sha256', $password);
@@ -24,9 +24,9 @@ class AuthController extends CI_Controller {
 		$status = $this->AuthModel->verifyUser($username, $password);
 		
 		if(!$status) {
-			return json_encode(array('status' => $status));
+			echo json_encode(array('status' => $status));
 		} else {
-			return json_encode($status);
+			echo json_encode($status);
 		}
 	}
 	
@@ -38,5 +38,18 @@ class AuthController extends CI_Controller {
 		$email = $this->input->post('email');
 		$phone = $this->input->post('phone');
 		
+		$passwordMatch = ((!empty($password) && !empty($confirmedPassword)) && ($password == $confirmedPassword)) ? true : false;
+		
+		if(empty($username) || empty($name) || empty($email) || empty($phone) || !$passwordMatch) {
+			echo json_encode(array('status' => false));
+		}
+		
+		$status = $this->AuthModel->registerUser($email, $password, $name, $phone, $username);
+		
+		if(!$status) {
+			echo json_encode(array('status' => false));
+		} else {
+			echo json_encode(array('status' => true));
+		}
 	}
 }
