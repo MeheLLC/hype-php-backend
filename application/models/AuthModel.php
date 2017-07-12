@@ -8,14 +8,14 @@ class AuthModel extends CI_Model {
 	}
 	
 	// Return true/false depending on if the user actually exist
-	private function verifyUser($username, $password) {
+	public function verifyUser($username, $password) {
 		if(empty($username) || empty($password)) return false;
 		
 		// Hash the users password
 		$hashedPassword = hash('sha256', $password);
 		
 		$this->db->select('auth_user_id');
-		$this->db->where('auth_user_username', $userData);
+		$this->db->where('auth_user_username', $username);
 		$this->db->where('auth_user_password', $hashedPassword);
 		
 		$query = $this->db->get('hype_auth');
@@ -24,7 +24,7 @@ class AuthModel extends CI_Model {
 		
 		if($recordCount == 1) {
 			$userData = $query->row();
-			return array('status' => true, 'user_id' => $row->auth_user_id);
+			return array('status' => true, 'user_id' => $userData->auth_user_id);
 		}
 		
 		return false;
